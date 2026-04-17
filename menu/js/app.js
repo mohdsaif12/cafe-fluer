@@ -114,13 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (count > 0) {
       cartBadge.classList.add('visible');
-      viewCartBtn.classList.add('visible');
       viewCartBtn.querySelector('.cart-text').innerHTML = `View Cart &bull; ${count} Item${count > 1 ? 's' : ''}`;
     } else {
       cartBadge.classList.remove('visible');
-      viewCartBtn.classList.remove('visible');
+      // Reset button text back to default
+      viewCartBtn.querySelector('.cart-text').innerHTML = 'View Cart';
       if (checkoutSection.classList.contains('active')) {
-        hideCheckout(); // Return to menu if cart emptied while in checkout
+        hideCheckout();
       }
     }
   };
@@ -198,19 +198,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await placeOrder(orderData);
 
       if (result.success) {
-        // Show success modal
+        // Show success modal FIRST
         successModal.classList.add('active');
-        clearCart();
+
+        // Reset form inputs immediately
         roomInput.value = '';
         phoneInput.value = '';
         notesInput.value = '';
-        
-        // Hide success modal after 3 seconds and go to menu
+
+        // Clear cart state WITHOUT triggering updateCartUI's auto-hideCheckout
+        cart = [];
+
+        // Reset button state immediately
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = 'Place Order';
+
+        // After 3 seconds: close modal, go back to menu, and fully refresh UI
         setTimeout(() => {
           successModal.classList.remove('active');
-          hideCheckout();
-          placeOrderBtn.disabled = false;
-          placeOrderBtn.textContent = 'Place Order';
+          // Manually switch sections (don't use hideCheckout which checks cart)
+          checkoutSection.classList.remove('active');
+          mainMenuSection.classList.add('active');
+          window.scrollTo(0, 0);
+          // Now fully re-render the items grid (resets all qty controls to "+" buttons)
+          renderItems(activeCategoryIndex);
+          // Reset cart badge and view cart button
+          updateCartUI();
         }, 3000);
       } else {
         alert("Failed to place order. Please try again or contact the front desk.");
