@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Contact action
     contactBtn.addEventListener('click', () => {
-      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=Hi%20${CONFIG.CAFE_NAME}`, '_blank');
+      window.location.href = `tel:+${CONFIG.WHATSAPP_NUMBER}`;
     });
 
     // Place Order action
