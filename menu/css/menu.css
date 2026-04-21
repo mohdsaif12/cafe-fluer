@@ -142,7 +142,16 @@ header {
   gap: 12px;
   padding: 0 20px 32px;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+  touch-action: pan-x;              /* Allow horizontal touch swipe */
+  scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
+  cursor: grab;          /* Desktop drag hint */
+  user-select: none;
+}
+.categories-nav:active {
+  cursor: grabbing;
 }
 .categories-nav::-webkit-scrollbar { display: none; } /* Chrome */
 
@@ -154,6 +163,7 @@ header {
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
+  flex-shrink: 0;        /* Prevent buttons from collapsing */
   transition: var(--transition);
   background: transparent;
 }

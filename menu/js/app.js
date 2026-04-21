@@ -30,10 +30,43 @@ document.addEventListener('DOMContentLoaded', () => {
     renderItems(activeCategoryIndex);
     updateCartUI();
     setupEventListeners();
+    setupDragScroll(categoryContainer);
     
     if(CONFIG.DEMO_MODE) {
        console.log("Running in DEMO MODE. Configure GOOGLE_SCRIPT_URL in config.js for real orders.");
     }
+  }
+
+  // === Mouse-drag scroll for category nav (desktop) ===
+  function setupDragScroll(el) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let isDragging = false;
+
+    el.addEventListener('mousedown', (e) => {
+      isDown = true;
+      isDragging = false;
+      startX = e.pageX - el.offsetLeft;
+      scrollLeft = el.scrollLeft;
+    });
+
+    el.addEventListener('mouseleave', () => { isDown = false; });
+    el.addEventListener('mouseup', () => { isDown = false; });
+
+    el.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - el.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      if (Math.abs(walk) > 5) isDragging = true;
+      el.scrollLeft = scrollLeft - walk;
+    });
+
+    // Prevent click on buttons when dragging
+    el.addEventListener('click', (e) => {
+      if (isDragging) e.stopPropagation();
+    }, true);
   }
 
   // === Render Functions ===
