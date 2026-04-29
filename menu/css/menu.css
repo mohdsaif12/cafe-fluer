@@ -88,12 +88,12 @@ header {
   text-align: center;
 }
 
-.logo h1 {
-  font-family: var(--font-serif);
-  color: var(--gold);
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 2px;
+.logo-img {
+  height: 80px; /* Increased size */
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  mix-blend-mode: screen;
 }
 
 .logo p {
@@ -199,6 +199,15 @@ header {
 /* =====================================================
    ITEMS GRID
    ===================================================== */
+.sub-category-title {
+  font-family: var(--font-serif);
+  color: var(--gold);
+  font-size: 22px;
+  font-weight: 600;
+  padding: 0 20px 16px;
+  margin-top: 10px;
+}
+
 .items-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -304,7 +313,7 @@ header {
    SIGNATURE SECTION
    ===================================================== */
 .signature-section {
-  background-color: #0F1C14;
+  background-color: var(--bg-dark);
   border-radius: var(--border-radius);
   margin: 0 20px 40px;
   padding: 32px 24px;

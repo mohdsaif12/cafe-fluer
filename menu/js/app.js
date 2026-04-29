@@ -22,12 +22,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const contactBtn = document.getElementById('contact-btn');
   const currentCategoryTitle = document.getElementById('current-category-title');
 
-  let activeCategoryIndex = 0;
+  const MACRO_CATEGORIES = [
+    {
+      name: 'Beverages',
+      subCategories: [
+        'Espresso & Black', 'Brew Coffee', 'Cold Coffee', 'Flavoured Iced Coffee', 
+        'Hot Chocolate', 'Hot Coffee', 'Iced Tea', 'Iced Coffee', 'Margherita', 
+        'Matcha', 'Mojitos', 'Shakes', 'Soda & Tea'
+      ]
+    },
+    {
+      name: 'Snacks',
+      subCategories: [
+        'Appetizers', 'Momos', 'Sandwich & Burger', 'Omelette', 'Maggi', 'Keema', 'Pancakes'
+      ]
+    },
+    {
+      name: 'Mains',
+      subCategories: [
+        'Mains', 'Pasta', 'Salad', 'Rice Bowls', 'Soups'
+      ]
+    },
+    {
+      name: 'Pizza',
+      subCategories: [
+        'Pizza'
+      ]
+    },
+    {
+      name: 'Combos',
+      subCategories: [
+        'Combos'
+      ]
+    }
+  ];
+
+  let activeMacroCategoryIndex = 0;
 
   // === Initialize ===
   function init() {
     renderCategories();
-    renderItems(activeCategoryIndex);
+    renderItems(activeMacroCategoryIndex);
     updateCartUI();
     setupEventListeners();
     setupDragScroll(categoryContainer);
@@ -74,13 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render category tabs
   function renderCategories() {
     categoryContainer.innerHTML = '';
-    MENU_DATA.forEach((category, index) => {
+    MACRO_CATEGORIES.forEach((macroCat, index) => {
       const btn = document.createElement('button');
-      btn.className = `category-btn ${index === activeCategoryIndex ? 'active' : ''}`;
+      btn.className = `category-btn ${index === activeMacroCategoryIndex ? 'active' : ''}`;
       // Note: Ignoring icon for now to match design pure text look
-      btn.textContent = category.name;
+      btn.textContent = macroCat.name;
       btn.addEventListener('click', () => {
-        activeCategoryIndex = index;
+        activeMacroCategoryIndex = index;
         renderCategories(); // Re-render to update active class
         renderItems(index);
       });
@@ -89,37 +124,51 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Render items for specific category
-  function renderItems(categoryIndex) {
-    const category = MENU_DATA[categoryIndex];
-    currentCategoryTitle.textContent = category.name;
+  function renderItems(macroIndex) {
+    const macroCategory = MACRO_CATEGORIES[macroIndex];
+    currentCategoryTitle.textContent = macroCategory.name;
     itemsContainer.innerHTML = '';
     
-    category.items.forEach(item => {
-      const cartItem = cart.find(i => i.id === item.id);
-      const qtyInCart = cartItem ? cartItem.qty : 0;
-
-      const itemCard = document.createElement('div');
-      itemCard.className = 'item-card';
+    macroCategory.subCategories.forEach(subCatName => {
+      const category = MENU_DATA.find(c => c.name === subCatName);
+      if (!category) return;
       
-      itemCard.innerHTML = `
-        <div class="item-img" style="background-image: url('${item.image}')"></div>
-        <div class="item-info">
-          <h3>${item.name}</h3>
-          <p>${item.description}</p>
-          <div class="item-bottom">
-            <span class="price">${CONFIG.CURRENCY}${item.price}</span>
-            ${qtyInCart > 0 
-              ? `<div class="qty-controls">
-                   <button class="qty-btn decrement" data-id="${item.id}">-</button>
-                   <span class="qty-value">${qtyInCart}</span>
-                   <button class="qty-btn increment" data-id="${item.id}">+</button>
-                 </div>`
-              : `<button class="add-btn" data-id="${item.id}">+</button>`
-            }
+      const subHeading = document.createElement('h3');
+      subHeading.className = 'sub-category-title';
+      subHeading.textContent = category.name;
+      itemsContainer.appendChild(subHeading);
+
+      const grid = document.createElement('div');
+      grid.className = 'items-grid';
+      
+      category.items.forEach(item => {
+        const cartItem = cart.find(i => i.id === item.id);
+        const qtyInCart = cartItem ? cartItem.qty : 0;
+
+        const itemCard = document.createElement('div');
+        itemCard.className = 'item-card';
+        
+        itemCard.innerHTML = `
+          <div class="item-img" style="background-image: url('${item.image}')"></div>
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <p>${item.description}</p>
+            <div class="item-bottom">
+              <span class="price">${CONFIG.CURRENCY}${item.price}</span>
+              ${qtyInCart > 0 
+                ? `<div class="qty-controls">
+                     <button class="qty-btn decrement" data-id="${item.id}">-</button>
+                     <span class="qty-value">${qtyInCart}</span>
+                     <button class="qty-btn increment" data-id="${item.id}">+</button>
+                   </div>`
+                : `<button class="add-btn" data-id="${item.id}">+</button>`
+              }
+            </div>
           </div>
-        </div>
-      `;
-      itemsContainer.appendChild(itemCard);
+        `;
+        grid.appendChild(itemCard);
+      });
+      itemsContainer.appendChild(grid);
     });
 
     // Attach event listeners to newly created buttons
@@ -127,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', (e) => {
         const id = parseInt(e.target.getAttribute('data-id'));
         addToCart(id);
-        renderItems(activeCategoryIndex); // Update specific item UI
+        renderItems(activeMacroCategoryIndex); // Update specific item UI
       });
     });
 
@@ -135,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', (e) => {
         const id = parseInt(e.target.getAttribute('data-id'));
         removeFromCart(id);
-        renderItems(activeCategoryIndex); // Update specific item UI
+        renderItems(activeMacroCategoryIndex); // Update specific item UI
       });
     });
   }
@@ -192,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkoutSection.classList.remove('active');
     mainMenuSection.classList.add('active');
     window.scrollTo(0, 0);
-    renderItems(activeCategoryIndex); // refresh UI
+    renderItems(activeMacroCategoryIndex); // refresh UI
   }
 
   // === Event Listeners ===
@@ -254,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
           mainMenuSection.classList.add('active');
           window.scrollTo(0, 0);
           // Now fully re-render the items grid (resets all qty controls to "+" buttons)
-          renderItems(activeCategoryIndex);
+          renderItems(activeMacroCategoryIndex);
           // Reset cart badge and view cart button
           updateCartUI();
         }, 3000);
