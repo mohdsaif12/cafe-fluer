@@ -218,11 +218,25 @@ document.addEventListener('DOMContentLoaded', () => {
       itemEl.innerHTML = `
         <div class="checkout-item-info">
           <h4>${item.name}</h4>
-          <span>${item.qty}x Quantity</span>
+          <div class="checkout-item-details">
+            <span>${item.qty}x Quantity</span>
+            <button class="remove-item-btn" data-id="${item.id}">
+              <i class="ph ph-trash"></i> Remove
+            </button>
+          </div>
         </div>
         <div class="checkout-item-price">${CONFIG.CURRENCY}${item.price * item.qty}</div>
       `;
       checkoutItemsList.appendChild(itemEl);
+    });
+
+    // Attach listeners for remove buttons
+    checkoutItemsList.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.getAttribute('data-id'));
+        deleteFromCart(id);
+        renderCheckout(); // Re-render checkout list
+      });
     });
 
     checkoutTotal.textContent = `${CONFIG.CURRENCY}${getCartTotal()}`;
