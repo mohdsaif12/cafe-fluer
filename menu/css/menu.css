@@ -139,21 +139,12 @@ header {
    ===================================================== */
 .categories-nav {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 0 20px 32px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
-  touch-action: pan-x;              /* Allow horizontal touch swipe */
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  cursor: grab;          /* Desktop drag hint */
   user-select: none;
 }
-.categories-nav:active {
-  cursor: grabbing;
-}
-.categories-nav::-webkit-scrollbar { display: none; } /* Chrome */
 
 .category-btn {
   padding: 10px 20px;
@@ -593,6 +584,39 @@ header {
   text-transform: uppercase;
   margin-bottom: 8px;
 }
+
+/* Tower Selection Styles */
+.tower-selection {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.tower-selection input[type="radio"] {
+  display: none;
+}
+
+.tower-btn {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  border-radius: 12px;
+  border: 1px solid var(--nav-border);
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--card-bg);
+  /* A lighter outline to make it look like a clickable option */
+}
+
+.tower-selection input[type="radio"]:checked + .tower-btn {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: var(--text-dark);
+}
+
 
 .input-wrapper {
   display: flex;

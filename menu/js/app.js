@@ -24,17 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const MACRO_CATEGORIES = [
     {
+      name: 'Snacks',
+      subCategories: [
+        'Appetizers', 'Momos', 'Sandwich & Burger', 'Omelette', 'Maggi', 'Keema', 'Pancakes'
+      ]
+    },
+    {
       name: 'Beverages',
       subCategories: [
         'Espresso & Black', 'Brew Coffee', 'Cold Coffee', 'Flavoured Iced Coffee', 
         'Hot Chocolate', 'Hot Coffee', 'Iced Tea', 'Iced Coffee', 'Margherita', 
         'Matcha', 'Mojitos', 'Shakes', 'Soda & Tea'
-      ]
-    },
-    {
-      name: 'Snacks',
-      subCategories: [
-        'Appetizers', 'Momos', 'Sandwich & Burger', 'Omelette', 'Maggi', 'Keema', 'Pancakes'
       ]
     },
     {
@@ -271,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Place Order action
     placeOrderBtn.addEventListener('click', async () => {
+      const tower = document.querySelector('input[name="tower"]:checked').value;
       const room = roomInput.value.trim();
       const phone = phoneInput.value.trim();
       const notes = notesInput.value.trim();
@@ -285,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const orderData = {
         items: getCartItems(),
+        tower: tower,
         roomNumber: room,
         phone: phone,
         total: getCartTotal(),
