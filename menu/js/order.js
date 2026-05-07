@@ -28,7 +28,8 @@ async function placeOrder(orderData) {
     // 1. Insert into 'orders' table
     const orderPayload = {
       id: orderId,
-      room_number: `${orderData.tower} - ${orderData.roomNumber}`,
+      room_number: orderData.roomNumber,
+      tower: orderData.tower,
       phone: orderData.phone,
       notes: orderData.notes || '',
       status: 'new'
